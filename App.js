@@ -1,75 +1,28 @@
 import React, { Component } from "react"; // sempre importar as bibliotecas
-import { View, Text, StyleSheet,TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-      //deve ser colocado tudo que é mutável
-      numero:0,
-      botao: 'VAI',
-      ultimo: null
-
+    this.state = {
+      feed: [
+        { id: '1', nome: 'Alice', idade: 1, email: 'alice@alice.com' },
+        { id: '2', nome: 'Sol', idade: 45, email: 'sol@sol.com' },
+        { id: '3', nome: 'Fernando', idade: 48, email: 'fernando@fernando.com' },
+        { id: '4', nome: 'João', idade: 24, email: 'joao@joao.com' },
+        { id: '5', nome: 'Valentina', idade: 21, email: 'valentina@valentina.com' },
+      ]
     };
-    this.timer = null;
-    this.vai = this.vai.bind(this);
-    this.limpar = this.limpar.bind(this);
   }
-  vai(){
-    if(this.timer != null){
-      clearInterval(this.timer);
-      this.timer = null;
-      this.setState({botao: 'VAI'})
-    } else{
-      this.timer = setInterval(() => {
-        this.setState({numero: this.state.numero + 0.1})
-  
-      }, 100);
-      this.setState({botao: 'PARAR'});
 
-    }
-    
-  }
-  limpar(){
-    if(this.timer != null){
-      clearInterval(this.timer);
-      this.timer = null;
-    }
-     this.setState({
-      
-      ultimo:this.state.numero,
-      numero: 0,
-      botao: 'VAI'
-    })
-
-  }
-  
-   
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.timer}> {this.state.numero.toFixed(1)} </Text>
-
-        <View style={styles.btnArea}>
-
-          <TouchableOpacity style={styles.botao} onPress={this.vai}>
-            <Text style={styles.btnTexto}>{this.state.botao}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.botao}onPress={this.limpar}>
-            <Text style={styles.btnTexto}>Limpar</Text>
-          </TouchableOpacity>
-
-        </View>
-        <View style={styles.areaUltimo}>
-         {<Text style={styles.textoTempo}>//renderização condicional
-          {this.state.ultimo > 0 ? 'Ultimo tempo: ' + this.state.ultimo.toFixed(2) + 's': 's'}
-            {/* Ultimo tempo: {this.state.ultimo.toFixed(2)} + 's' */}
-          </Text> }
-          
-
-        </View>
-      
+        <FlatList
+          data={this.state.feed}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <Pessoa data={item} />}
+        />
       </View>
     );
   }
@@ -78,54 +31,29 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems:'center',
-    justifyContent: 'center',
-    backgroundColor:'#00aeef'
- //margin negativo sobe o item
+    padding: 20,
   },
-  btnArea:{
-    flexDirection: 'row',
-    marginTop:70,
-    height: 40
+  pessoa: {
+    marginBottom: 10,
+    padding: 15,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 5,
   },
-  botao:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor:'white',
-    height: 40,
-    margin: 20,
-    borderRadius: 10
-  },
-  btnTexto:{
-    justifyContent: 'center',
-    fontSize:25,
-    fontStyle:'italic',
-    fontWeight:'bold',
-    color:'#00aeef'    
-  },
-  timer:{
-    flexDirection:'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize:90,
-    fontWeight:'bold',
-    fontStyle:'italic',
-    color:'white'
-
-  },
-  textoTempo:{
-    fontSize: 25,
-    fontStyle:'italic',
-    fontWeight:'bold',
-    color:'white'
-
-  },
-  areaUltimo:{
-    marginTop:40,
-
+  text: {
+    fontSize: 16,
   }
-
 });
+
+class Pessoa extends Component {
+  render() {
+    return (
+      <View style={styles.pessoa}>
+        <Text style={styles.text}>Nome: {this.props.data.nome}</Text>
+        <Text style={styles.text}>Idade: {this.props.data.idade}</Text>
+        <Text style={styles.text}>Email: {this.props.data.email}</Text>
+      </View>
+    );
+  }
+}
 
 export default App; // envia app para o <emulador>
